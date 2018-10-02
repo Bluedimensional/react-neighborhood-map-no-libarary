@@ -4,6 +4,8 @@ import './App.css';
 import axios from 'axios';
 
 class App extends Component {
+
+
   state = {
     venues: []
   }
@@ -12,7 +14,6 @@ class App extends Component {
 
   componentDidMount() {
     this.getVenues()
-    this.renderMap()
   }
 
   renderMap = () => {
@@ -35,7 +36,7 @@ class App extends Component {
       .then(response => {
         this.setState({
           venues: response.data.response.groups[0].items
-        })
+        }, this.renderMap())                   // We ask React to render our map here, after it has looped the marker data, as opposed to inside of componentDidMount
       })
       .catch(error => {
         console.log("ERROR! " + error);
@@ -43,10 +44,36 @@ class App extends Component {
   }
 
   initMap = () => {
+    // Create a Google Map
         var map = new window.google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
+          center: {lat: 36.16, lng: -86.78},
+          zoom: 13
         });
+
+        // Create InfoWindow (outside the loop!)
+        var infowindow = new window.google.maps.InfoWindow();
+
+        // Looping over venues inside our state
+        this.state.venues.map(myVenue => {
+
+          var contentString = `${myVenue.venue.name}`;
+
+          // Create Marker
+          var marker = new window.google.maps.Marker({
+            position: {lat: myVenue.venue.location.lat, lng: myVenue.venue.location.lng},
+            map: map,
+            title: myVenue.venue.name
+          });
+          // Listen for click
+          marker.addListener('click', function() {
+
+            // Change the content
+            infowindow.setContent(contentString);
+
+            // Open InfoWindow
+            infowindow.open(map, marker);
+          });
+        })
       }
 
 

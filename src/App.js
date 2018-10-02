@@ -6,12 +6,32 @@ import axios from 'axios';
 class App extends Component {
 
   componentDidMount() {
+    this.getVenues()
     this.renderMap()
   }
 
   renderMap = () => {
     loadScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyBgtzCcU3cMjtTQJ03SRVa1-CNoPn7HkpA&callback=initMap')
     window.initMap = this.initMap
+  }
+
+  getVenues = () => {
+    const endPoint = "https://api.foursquare.com/v2/venues/explore?"
+    const parameters = {
+      client_id: "1FBUUYE1FOUN1FZ14UDOSYY2SAV41CPFIIGGVRKUMZJ3BACC",
+      client_secret: "EWZO0YLIZST1NVZOEDIZCECCNWFODUIYVIWXINRDVKJYGAO5",
+      query: "coffee",
+      near: "Nashville",
+      v: "20181002"
+    }
+
+    axios.get(endPoint + new URLSearchParams(parameters))
+      .then(response => {
+        console.log(response.data.response.groups[0].items)
+      })
+      .catch(error => {
+        console.log("ERROR! " + error);
+      })
   }
 
   initMap = () => {

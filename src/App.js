@@ -5,12 +5,9 @@ import axios from 'axios';
 
 class App extends Component {
 
-
   state = {
     venues: []
   }
-
-
 
   componentDidMount() {
     this.getVenues()

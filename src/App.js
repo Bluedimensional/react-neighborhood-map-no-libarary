@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import Sidebar from './component/Sidebar';
 
 class App extends Component {
 
@@ -76,8 +77,10 @@ class App extends Component {
 
   render() {
     return (
-      <main>
+      <main className="App">
+        <Sidebar />
         <div id="map"></div>
+
       </main>
 
     );

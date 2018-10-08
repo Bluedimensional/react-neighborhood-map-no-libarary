@@ -27,7 +27,7 @@ class App extends Component {
       query: "coffee",
       near: "Nashville",
       v: "20181002",
-      limit: 10
+      limit: 25
     }
 
     axios.get(endPoint + new URLSearchParams(parameters))
@@ -41,6 +41,8 @@ class App extends Component {
       })
   }
 
+
+
   initMap = () => {
     // Create a Google Map
         var map = new window.google.maps.Map(document.getElementById('map'), {
@@ -53,9 +55,7 @@ class App extends Component {
 
         // Looping over venues inside our state
         this.state.venues.map(myVenue => {
-
           var contentString = `${myVenue.venue.name}`;
-
           // Create Marker
           var marker = new window.google.maps.Marker({
             position: {lat: myVenue.venue.location.lat, lng: myVenue.venue.location.lng},
@@ -64,10 +64,8 @@ class App extends Component {
           });
           // Listen for click
           marker.addListener('click', function() {
-
             // Change the content
             infowindow.setContent(contentString);
-
             // Open InfoWindow
             infowindow.open(map, marker);
           });
@@ -78,9 +76,8 @@ class App extends Component {
   render() {
     return (
       <main className="App">
-        <Sidebar />
+        <Sidebar {...this.state} />
         <div id="map"></div>
-
       </main>
 
     );
@@ -96,6 +93,5 @@ function loadScript(url) {
   index.parentNode.insertBefore(script, index)
 
 }
-
 
 export default App;

@@ -47,11 +47,31 @@ class App extends Component {
     // Create a Google Map
         var map = new window.google.maps.Map(document.getElementById('map'), {
           center: {lat: 36.16, lng: -86.78},
-          zoom: 13
+          zoom: 11
         });
 
         // Create InfoWindow (outside the loop!)
         var infowindow = new window.google.maps.InfoWindow();
+
+        const position = (pos) => {
+          // var crd = pos.coords;
+          var crd = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          }
+
+
+          console.log('Your current position is:');
+          console.log(`Latitude : ${crd.lat}`);
+          console.log(`Longitude: ${crd.lng}`);
+          console.log(`More or less ${crd.accuracy} meters.`);
+          
+        }
+        console.log(position.crd)
+        
+        navigator.geolocation.getCurrentPosition(position);
+
+        
 
         // Looping over venues inside our state
         this.state.venues.map(myVenue => {

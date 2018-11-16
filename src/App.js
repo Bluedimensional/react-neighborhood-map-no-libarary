@@ -18,7 +18,7 @@ class App extends Component {
     window.initMap = this.initMap
   }
 
-  getVenues = () => {
+  getVenues = (crd) => {
     const endPoint = "https://api.foursquare.com/v2/venues/explore?"
     const parameters = {
       client_id: "1FBUUYE1FOUN1FZ14UDOSYY2SAV41CPFIIGGVRKUMZJ3BACC",
@@ -26,8 +26,8 @@ class App extends Component {
       query: "coffee",
       v: "20181002",
       // this needs to be the geolocation from below instead of hard-coded 
-      // ll: "33.33,-88.88",
-      near: "Nashville, TN",
+      ll: crd,
+      // near: "Nashville, TN", 
       limit: 25
     }
 
@@ -68,10 +68,14 @@ class App extends Component {
       console.log(`Longitude: ${crd.lng}`);
       console.log(`More or less ${crd.accuracy} meters.`);
       // suuccessfully sets the map center to geolocation - needs to also set `ll` inside `getVenues`
-      map.setCenter(crd)
+      map.setCenter(crd);
+      console.log(map.setCenter(crd));
+      this.getVenues(crd.lat,crd.lng)
     }
-
+    
+    // The position callback is therefore the right place from where to call getVenues and pass it the coordinates.  https://stackoverflow.com/questions/53330310/how-to-get-value-from-inside-one-method-to-another-in-same-class?noredirect=1#comment93540945_53330310
     navigator.geolocation.getCurrentPosition(position);
+    // navigator.geolocation.getVenues(position.crd);
 
 
     // Looping over venues inside our state

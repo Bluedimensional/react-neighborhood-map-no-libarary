@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 import Sidebar from './component/Sidebar';
@@ -25,10 +24,13 @@ class App extends Component {
       client_id: "1FBUUYE1FOUN1FZ14UDOSYY2SAV41CPFIIGGVRKUMZJ3BACC",
       client_secret: "EWZO0YLIZST1NVZOEDIZCECCNWFODUIYVIWXINRDVKJYGAO5",
       query: "coffee",
-      near: "Nashville",
       v: "20181002",
+      // this needs to be the geolocation from below instead of hard-coded 
+      // ll: "33.33,-88.88",
+      near: "Nashville, TN",
       limit: 25
     }
+
 
     axios.get(endPoint + new URLSearchParams(parameters))
       .then(response => {
@@ -39,58 +41,57 @@ class App extends Component {
       .catch(error => {
         console.log("ERROR! " + error);
       })
+      console.log(endPoint + new URLSearchParams(parameters));
   }
 
 
 
   initMap = () => {
     // Create a Google Map
-        var map = new window.google.maps.Map(document.getElementById('map'), {
-          center: {lat: 36.16, lng: -86.78},
-          zoom: 11
-        });
+    var map = new window.google.maps.Map(document.getElementById('map'), {
+      center: { lat: 36.16, lng: -86.78 },
+      zoom: 15
+    });
 
-        // Create InfoWindow (outside the loop!)
-        var infowindow = new window.google.maps.InfoWindow();
+    // Create InfoWindow (outside the loop!)
+    var infowindow = new window.google.maps.InfoWindow();
 
-        const position = (pos) => {
-          // var crd = pos.coords;
-          var crd = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          }
-
-
-          console.log('Your current position is:');
-          console.log(`Latitude : ${crd.lat}`);
-          console.log(`Longitude: ${crd.lng}`);
-          console.log(`More or less ${crd.accuracy} meters.`);
-          
-        }
-        console.log(position.crd)
-        
-        navigator.geolocation.getCurrentPosition(position);
-
-        
-
-        // Looping over venues inside our state
-        this.state.venues.map(myVenue => {
-          var contentString = `${myVenue.venue.name}`;
-          // Create Marker
-          var marker = new window.google.maps.Marker({
-            position: {lat: myVenue.venue.location.lat, lng: myVenue.venue.location.lng},
-            map: map,
-            title: myVenue.venue.name
-          });
-          // Listen for click
-          marker.addListener('click', function() {
-            // Change the content
-            infowindow.setContent(contentString);
-            // Open InfoWindow
-            infowindow.open(map, marker);
-          });
-        })
+    const position = (pos) => {
+      // var crd = pos.coords;
+      var crd = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude
       }
+
+      console.log('Your current position is:');
+      console.log(`Latitude : ${crd.lat}`);
+      console.log(`Longitude: ${crd.lng}`);
+      console.log(`More or less ${crd.accuracy} meters.`);
+      // suuccessfully sets the map center to geolocation - needs to also set `ll` inside `getVenues`
+      map.setCenter(crd)
+    }
+
+    navigator.geolocation.getCurrentPosition(position);
+
+
+    // Looping over venues inside our state
+    this.state.venues.map(myVenue => {
+      var contentString = `${myVenue.venue.name}`;
+      // Create Marker
+      var marker = new window.google.maps.Marker({
+        position: { lat: myVenue.venue.location.lat, lng: myVenue.venue.location.lng },
+        map: map,
+        title: myVenue.venue.name
+      });
+      // Listen for click
+      marker.addListener('click', function () {
+        // Change the content
+        infowindow.setContent(contentString);
+        // Open InfoWindow
+        infowindow.open(map, marker);
+      });
+    })
+  }
 
 
   render() {
